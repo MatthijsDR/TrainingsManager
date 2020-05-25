@@ -34,9 +34,10 @@ namespace DomainLibrary.Domain
         public float AverageSpeed { get; set; }
         public TrainingType TrainingType { get; set; }
         public string Comments { get; set; }
+
         public override string ToString()
         {
-            return $"Run : {Id},{When},{Distance},{Time},{AverageSpeed},{TrainingType}";
+            return this.GetType().Name;
         }
     }
 }

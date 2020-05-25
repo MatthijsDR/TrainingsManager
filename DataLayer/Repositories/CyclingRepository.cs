@@ -37,7 +37,8 @@ namespace DataLayer.Repositories
 
         public IEnumerable<CyclingSession> FindLatestSessions(int number)
         {
-            return context.CyclingSessions.OrderBy(s => s.When).Take(number).AsEnumerable<CyclingSession>();
+            //Gives back the first not the latest => DESCENDING
+            return context.CyclingSessions.OrderByDescending(s => s.When).Take(number).AsEnumerable<CyclingSession>();
         }
 
         public CyclingSession[] FindMaxSessions()

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DomainLibrary.Domain
 {
-    public class CyclingSession
+    public class CyclingSession 
     {
         public CyclingSession()
         {
@@ -38,9 +38,12 @@ namespace DomainLibrary.Domain
         public TrainingType TrainingType { get; set; }
         public string Comments { get; set; }
         public BikeType BikeType { get; set; }
+
+       
+
         public override string ToString()
         {
-            return $"Ride : {Id},{When},{Distance},{Time},{AverageSpeed},{AverageWatt},{TrainingType},{BikeType}";
+            return this.GetType().Name;
         }
     }
 }
