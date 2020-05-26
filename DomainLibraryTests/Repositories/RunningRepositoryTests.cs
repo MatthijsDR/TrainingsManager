@@ -159,6 +159,8 @@ namespace DataLayer.Repositories.Tests
             _context.SaveChanges();
 
             //Act
+            _context = new TrainingContextTest(true);
+            _runRepo = new RunningRepository(_context);
             _runRepo.RemoveTraining(1);
             //Assert
             _context.RunningSessions.Should().NotContain(runSes0);

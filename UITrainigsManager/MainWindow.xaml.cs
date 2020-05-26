@@ -58,40 +58,7 @@ namespace UITrainigsManager
 
         private void btnGetMonthlyOverview_Click(object sender, RoutedEventArgs e)
         {
-
-            var yearMonthArray = tbNumberOfMonthAndYear.Text.Split("/").ToList();
-            bool monthOk = int.TryParse(yearMonthArray.FirstOrDefault(), out int month);
-            bool yearOk = int.TryParse(yearMonthArray.LastOrDefault(), out int year);
-            monthOk = (monthOk) ? (month > 0 && month < 13) : false;
-            yearOk = (yearOk) ? (year > 0 && year < 100000) : false;
-            if (!monthOk || !yearOk) { MessageBox.Show("Give a acceptable date please...", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); tbNumberOfMonthAndYear.Text = String.Empty; return; }
-
-            
-            if (cbBycicle.IsChecked == true && cbRunning.IsChecked == false)
-            {
-                var report = tm.GenerateMonthlyCyclingReport(year, month);
-                lvOverview.ItemsSource = report.Rides;
-            }
-            else if (cbRunning.IsChecked == true && cbBycicle.IsChecked == false)
-            {
-                var report = tm.GenerateMonthlyRunningReport(year, month);
-                lvOverview.ItemsSource = report.Runs;
-            }
-            else if (cbRunning.IsChecked == true && cbBycicle.IsChecked == true)
-            {
-                var report = tm.GenerateMonthlyTrainingsReport(year, month);
-                var timeLine = report.TimeLine;
-                var objects = new List<Object>();
-                foreach(var t in timeLine)
-                {
-                    objects.Add(t.Item2);
-                }
-                lvOverview.ItemsSource = objects;
-            }
-            else
-            {
-                    MessageBox.Show("Please select Running or Biking or both...","ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            SetMonthlyOverview();
 
         }
         
@@ -127,29 +94,7 @@ namespace UITrainigsManager
 
         private void btnGetLatetsSessions_Click(object sender, RoutedEventArgs e)
         {
-            bool isNumber = int.TryParse(numberOfLatetsSessions.Text, out int amount);
-            if (!isNumber) { MessageBox.Show("Give a number", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); return; }
-            if (cbBycicle.IsChecked == false && cbRunning.IsChecked == false) { MessageBox.Show("Select a type", "ERROR", MessageBoxButton.OK); return; }
-            List<CyclingSession> biSes = new List<CyclingSession>();
-            if (cbBycicle.IsChecked == true)
-            {
-                biSes.AddRange(tm.GetPreviousCyclingSessions(amount));
-                lbTitle.Content = $"The last {amount} bike-sessions";
-            }
-            List<RunningSession> runSes = new List<RunningSession>();
-            if (cbRunning.IsChecked == true)
-            {
-                runSes.AddRange(tm.GetPreviousRunningSessions(amount));
-                lbTitle.Content = $"The last {amount} run-sessions";
-            }
-            if(cbRunning.IsChecked == true && cbBycicle.IsChecked == true)
-            {
-                lbTitle.Content = $"The last {amount} sessions";
-            }
-
-            List<Object> sessions = SortSessions(biSes, runSes).Take(amount).ToList();
-
-            lvOverview.ItemsSource = sessions;
+            SetLatestSessions();
         }
 
         private void deleteButton_Click(object sender, RoutedEventArgs e)
@@ -168,10 +113,80 @@ namespace UITrainigsManager
                     trainigsmanager.RemoveTrainings(cyclingIds, runningIds);
                 }
             }
-            var window = new MainWindow();
-            window.Show();
-            this.Close();
+            bool isMonthlyOverview = lbTitle.Content.ToString().Contains("Monthly");
+            if (isMonthlyOverview)
+                SetMonthlyOverview();
+            else
+                SetLatestSessions();
+            setBestSessions();
 
+        }
+
+        private void SetMonthlyOverview()
+        {
+
+            var yearMonthArray = tbNumberOfMonthAndYear.Text.Split("/").ToList();
+            bool monthOk = int.TryParse(yearMonthArray.FirstOrDefault(), out int month);
+            bool yearOk = int.TryParse(yearMonthArray.LastOrDefault(), out int year);
+            monthOk = (monthOk) ? (month > 0 && month < 13) : false;
+            yearOk = (yearOk) ? (year > 0 && year < 100000) : false;
+            if (!monthOk || !yearOk) { MessageBox.Show("Give a acceptable date please...", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); tbNumberOfMonthAndYear.Text = String.Empty; return; }
+
+
+            if (cbBycicle.IsChecked == true && cbRunning.IsChecked == false)
+            {
+                var report = tm.GenerateMonthlyCyclingReport(year, month);
+                lvOverview.ItemsSource = report.Rides;
+            }
+            else if (cbRunning.IsChecked == true && cbBycicle.IsChecked == false)
+            {
+                var report = tm.GenerateMonthlyRunningReport(year, month);
+                lvOverview.ItemsSource = report.Runs;
+            }
+            else if (cbRunning.IsChecked == true && cbBycicle.IsChecked == true)
+            {
+                var report = tm.GenerateMonthlyTrainingsReport(year, month);
+                var timeLine = report.TimeLine;
+                var objects = new List<Object>();
+                foreach (var t in timeLine)
+                {
+                    objects.Add(t.Item2);
+                }
+                lvOverview.ItemsSource = objects;
+            }
+            else
+            {
+                MessageBox.Show("Please select Running or Biking or both...", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            lbTitle.Content = $"Sessions in {(Months)month} of {year}";
+
+        }
+        private void SetLatestSessions()
+        {
+
+            bool isNumber = int.TryParse(numberOfLatetsSessions.Text, out int amount);
+            if (!isNumber) { MessageBox.Show("Give a number", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); return; }
+            if (cbBycicle.IsChecked == false && cbRunning.IsChecked == false) { MessageBox.Show("Select a type", "ERROR", MessageBoxButton.OK); return; }
+            List<CyclingSession> biSes = new List<CyclingSession>();
+            if (cbBycicle.IsChecked == true)
+            {
+                biSes.AddRange(tm.GetPreviousCyclingSessions(amount));
+                lbTitle.Content = $"The last {amount} bike-sessions";
+            }
+            List<RunningSession> runSes = new List<RunningSession>();
+            if (cbRunning.IsChecked == true)
+            {
+                runSes.AddRange(tm.GetPreviousRunningSessions(amount));
+                lbTitle.Content = $"The last {amount} run-sessions";
+            }
+            if (cbRunning.IsChecked == true && cbBycicle.IsChecked == true)
+            {
+                lbTitle.Content = $"The last {amount} sessions";
+            }
+
+            List<Object> sessions = SortSessions(biSes, runSes).Take(amount).ToList();
+
+            lvOverview.ItemsSource = sessions;
         }
     }
 }

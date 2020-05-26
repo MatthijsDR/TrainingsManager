@@ -161,6 +161,8 @@ namespace DataLayer.Repositories.Tests
             _cycRepo.AddTraining(cycSes4);
             _context.SaveChanges();
             //Act
+            _context = new TrainingContextTest(true);
+            _cycRepo = new CyclingRepository(_context);
             _cycRepo.RemoveTraining(1);
             //Assert
             _context.CyclingSessions.Should().NotContain(cycSes0);
