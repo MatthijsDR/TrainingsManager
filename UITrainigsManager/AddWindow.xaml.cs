@@ -35,7 +35,15 @@ namespace UITrainigsManager
         {
             bool speedFlag = double.TryParse(bikeAvgSpeed.Text, out double averageSpeed);
             float? nullableAverageSpeed = (averageSpeed == 0) ? null : (float?)averageSpeed;
-            bool wattFlag = int.TryParse(avgWatt.Text, out int averageWatt);
+
+
+            bool wattFlag;
+            int? averageWatt  = null;
+            if (avgWatt.Text != String.Empty)
+            {
+                wattFlag = int.TryParse(avgWatt.Text, out int notNullAverageWatt);
+                averageWatt = notNullAverageWatt;
+            }
 
             BikeType bikeType = BikeType.CityBike;
             bool typeFlag = false;
@@ -45,7 +53,14 @@ namespace UITrainigsManager
                 typeFlag = true;
             }
 
-            bool distanceFlag = double.TryParse(bikeAfstand.Text, out double distance);
+            bool distanceFlag = false;
+            double? distance = null;
+            if (bikeAfstand.Text != String.Empty)
+            {
+                distanceFlag = double.TryParse(bikeAfstand.Text, out double notNullDistance);
+                distance = notNullDistance;
+            }
+
 
             TrainingType trainingType = TrainingType.Endurance;
             bool trainigsFlag = false;
@@ -69,15 +84,15 @@ namespace UITrainigsManager
             {
                 try
                 {
-                    _tm.AddCyclingTraining(startTijd, (float)distance, time,
+                    _tm.AddCyclingTraining(startTijd, (float?)distance, time,
                         nullableAverageSpeed, averageWatt, trainingType, comment, bikeType);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("An execption just occurred: " + ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                MessageBox.Show("Record has been added","Succes", MessageBoxButton.OK);
+                MessageBox.Show("Record has been added", "Succes", MessageBoxButton.OK);
                 var window = new MainWindow();
                 window.Show();
                 this.Close();
@@ -115,7 +130,7 @@ namespace UITrainigsManager
                 startTijd = DateTime.Parse((rundpStartTijd.Text));
                 startTimeFlag = true;
             }
-            
+
             if (distanceFlag && trainigsFlag && timeFlag && startTimeFlag)
             {
                 try

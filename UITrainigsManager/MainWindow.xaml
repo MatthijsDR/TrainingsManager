@@ -29,7 +29,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Type" DisplayMemberBinding="{Binding}" Width="auto"/>
-                        <GridViewColumn Header="When" DisplayMemberBinding="{Binding When}" Width="auto"/>
+                        <GridViewColumn Header="When" DisplayMemberBinding="{Binding When}"/>
                         <GridViewColumn Header="Distance" DisplayMemberBinding="{Binding Distance}" Width="auto"/>
                         <GridViewColumn Header="TrainingType" DisplayMemberBinding="{Binding TrainingType}" Width="auto"/>
                         <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Time}" Width="auto"/>
@@ -52,9 +52,9 @@
                 </Style>
             </StackPanel.Resources>
             <Label Content="Best Sessions" HorizontalAlignment="Center" FontStyle="Oblique" FontWeight="Bold" />
-            <ListView x:Name="lvBestSessions">
-                <ListView.View>
-                    <GridView>
+            <ListView x:Name="lvBestSessions" Focusable="False">
+                <ListView.View >
+                    <GridView >
                         <GridViewColumn DisplayMemberBinding="{Binding Title}"/>
                         <GridViewColumn Header="When" DisplayMemberBinding="{Binding session.When}" Width="auto"/>
                         <GridViewColumn Header="Distance" DisplayMemberBinding="{Binding session.Distance}" Width="auto"/>

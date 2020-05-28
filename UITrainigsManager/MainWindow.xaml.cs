@@ -44,9 +44,9 @@ namespace UITrainigsManager
             var longestRun = report.MaxDistanceSessionRunning;
             var highestSpeedRun = report.MaxSpeedSessionRunning;
 
-            var list = new[]
+            var list = new [] 
             {
-                new {Title = "Longest Ride", session = (object)longestCycling},
+                new  {Title = "Longest Ride", session = (object)longestCycling},
                 new {Title = "Highest Speed Ride", session = (object)highestSpeedCycling},
                 new {Title = "Highest Watt Ride", session = (object)highestWattCycling},
                 new {Title = "Longest Run", session = (object)longestRun},
@@ -55,6 +55,7 @@ namespace UITrainigsManager
             lvBestSessions.ItemsSource = list;
 
         }
+        
 
         private void btnGetMonthlyOverview_Click(object sender, RoutedEventArgs e)
         {
@@ -100,7 +101,7 @@ namespace UITrainigsManager
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             var trainigsmanager = new TrainingManager(new UnitOfWork(new TrainingContext()));
-            if(lvOverview.SelectedItems != null)
+            if(lvOverview.SelectedItems != null || lvBestSessions.SelectedItems != null)
             {
                 List<int> cyclingIds = new List<int>();
                 List<int> runningIds = new List<int>();
@@ -110,9 +111,12 @@ namespace UITrainigsManager
                         cyclingIds.Add((item as CyclingSession).Id);
                     if (item is RunningSession)
                         runningIds.Add((item as RunningSession).Id);
-                    trainigsmanager.RemoveTrainings(cyclingIds, runningIds);
                 }
+                
+
+                trainigsmanager.RemoveTrainings(cyclingIds, runningIds);
             }
+            
             bool isMonthlyOverview = lbTitle.Content.ToString().Contains("Monthly");
             if (isMonthlyOverview)
                 SetMonthlyOverview();

@@ -1,15 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DomainLibrary.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Moq;
-using DomainLibrary.Repositories;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
-using FluentAssertions;
-using DataLayer;
+﻿using DataLayer;
 using DomainLibraryTests;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System;
 using System.Linq;
 
 namespace DomainLibrary.Domain.Tests
@@ -26,7 +20,7 @@ namespace DomainLibrary.Domain.Tests
 
             mockUoW.Setup(x => x.CyclingTrainings.AddTraining(It.IsAny<CyclingSession>()));
             tm = new TrainingManager(new Mock<IUnitOfWork>().Object);
-           
+
         }
 
         [TestMethod()]
@@ -148,9 +142,9 @@ namespace DomainLibrary.Domain.Tests
 
             SetupForReportTests();
 
-            var r = tm.GenerateMonthlyCyclingReport(2020,4);
+            var r = tm.GenerateMonthlyCyclingReport(2020, 4);
 
-            r.Rides.Select(x => x.When.Month).All( m => m == 4);
+            r.Rides.Select(x => x.When.Month).All(m => m == 4);
             r.Rides.Count.Should().Be(2);
             r.TotalCyclingDistance.Should().Be(40 + 40);
             r.TotalCyclingTrainingTime.Should().Be(TimeSpan.FromTicks(new TimeSpan(1, 20, 00).Ticks + new TimeSpan(1, 42, 00).Ticks));
